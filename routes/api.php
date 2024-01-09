@@ -5,6 +5,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Medium;
 use App\Models\User;
 use App\Repositories\MatchRepository;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -37,9 +38,9 @@ Route::post('auth/sign-in', function (Request $request) {
 
     if($user === null || Auth::validate($credentials) !== true)
     {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
+        return response()->json([
+            'message' => 'The provided credentials are incorrect.'
+        ], 401);
     }
 
     return response()->json([
@@ -51,18 +52,26 @@ Route::post('auth/sign-in', function (Request $request) {
 Route::post('auth/sign-up', function (Request $request) {
     $request->validate([
         'username' => 'required|string|between:6,32',
-        'email' => 'required|email|unique:users,email',
+        'email' => 'required|email',
         'password' => 'required',
         'birthday' => 'required|date',
     ]);
 
-    $user = new User([
-        'name' => $request->get('username'),
-        'password' => bcrypt($request->get('password')),
-        'email' => $request->get('email'),
-        'birthday' => $request->get('birthday'),
-    ]);
-    $user->save();
+    try {
+        $user = new User([
+            'name' => $request->get('username'),
+            'password' => bcrypt($request->get('password')),
+            'email' => $request->get('email'),
+            'birthday' => $request->get('birthday'),
+        ]);
+        $user->save();
+    }
+    catch (UniqueConstraintViolationException)
+    {
+        return response()->json([
+            'message' => 'These credentials have already been taken.',
+        ], 409);
+    }
 
     return response()->json([
         'user' => $user,

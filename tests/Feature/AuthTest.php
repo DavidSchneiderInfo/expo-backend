@@ -13,22 +13,6 @@ class AuthTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function testDuplicateEmailThrowsError(): void
-    {
-        $user = User::factory()->create();
-
-        $this->post('auth/sign-up', [
-            'email' => $user->email,
-            'password' => Str::random(),
-            'username' => Str::random(),
-            'birthday' => $user->birthday->format('Y-m-d'),
-        ])->assertInvalid([
-            'email' => [
-                'The email has already been taken.'
-            ]
-        ]);
-    }
-
     public function testUserCanSignIn(): void
     {
         $password = Str::password();
@@ -55,6 +39,18 @@ class AuthTest extends TestCase
         $this->withHeader('Authorization', 'Bearer '.$response->json('token'))
             ->get('user')
             ->assertSuccessful();
+    }
+
+    public function testUsersCanNotLoginWithWrongPassword(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $this->post('auth/sign-in', [
+                'email' => $user->email,
+                'password' => Str::password(),
+            ])
+            ->assertStatus(401);
     }
 
     public function testUserCanSignUp(): void
@@ -86,5 +82,21 @@ class AuthTest extends TestCase
         $this->withHeader('Authorization', 'Bearer '.$response->json('token'))
             ->get('user')
             ->assertSuccessful();
+    }
+
+    public function testUserCantSignUpWithExistingEmail(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $password = Str::password();
+
+        $this->post('auth/sign-up', [
+                'email' => $user->email,
+                'password' => $password,
+                'passwordRepeat' => $password,
+                'username' => $user->name,
+                'birthday' => $user->birthday->format('Y-m-d'),
+            ])
+            ->assertStatus(409);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
+use App\Auth\Actions\CreateToken;
 use App\Http\Resources\ProfileResource;
+use App\Http\Resources\SuccessfulAuthenticationResource;
 use App\Http\Resources\UserResource;
 use App\Models\Medium;
 use App\Models\User;
@@ -12,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +26,7 @@ use Illuminate\Validation\ValidationException;
 |
 */
 
-Route::post('auth/sign-in', function (Request $request) {
+Route::post('auth/sign-in', function (Request $request, CreateToken $tokenAction) {
     $credentials = $request->validate([
         'email' => 'required|email',
         'password' => 'required',
@@ -43,13 +44,12 @@ Route::post('auth/sign-in', function (Request $request) {
         ], 401);
     }
 
-    return response()->json([
-        'user' => $user,
-        'token' => $user->createToken('mobile')->plainTextToken,
-    ]);
+    $token = $tokenAction->getTokenForUser($user);
+
+    return new SuccessfulAuthenticationResource($user, $token);
 });
 
-Route::post('auth/sign-up', function (Request $request) {
+Route::post('auth/sign-up', function (Request $request, CreateToken $tokenAction) {
     $request->validate([
         'username' => 'required|string|between:6,32',
         'email' => 'required|email',
@@ -73,10 +73,9 @@ Route::post('auth/sign-up', function (Request $request) {
         ], 409);
     }
 
-    return response()->json([
-        'user' => $user,
-        'token' => $user->createToken('mobile')->plainTextToken,
-    ]);
+    $token = $tokenAction->getTokenForUser($user);
+
+    return new SuccessfulAuthenticationResource($user, $token);
 });
 
 Route::middleware('auth:sanctum')->group(function ($router) {

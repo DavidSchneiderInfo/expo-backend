@@ -13,6 +13,18 @@ class AuthTest extends TestCase
 {
     use DatabaseMigrations;
 
+    private function expectedStructure(): array
+    {
+        return [
+            'user' => [
+                'name',
+                'birthday',
+            ],
+            'token',
+            'expires_at'
+        ];
+    }
+
     public function testUserCanSignIn(): void
     {
         $password = Str::password();
@@ -28,13 +40,7 @@ class AuthTest extends TestCase
             ]);
 
         $response->assertSuccessful()
-            ->assertJsonStructure([
-                'user' => [
-                    'name',
-                    'birthday',
-                ],
-                'token',
-            ]);
+            ->assertJsonStructure($this->expectedStructure());
 
         $this->withHeader('Authorization', 'Bearer '.$response->json('token'))
             ->get('user')
@@ -71,13 +77,7 @@ class AuthTest extends TestCase
             ]);
 
         $response->assertSuccessful()
-            ->assertJsonStructure([
-                'user' => [
-                    'name',
-                    'birthday',
-                ],
-                'token',
-            ]);
+            ->assertJsonStructure($this->expectedStructure());
 
         $this->withHeader('Authorization', 'Bearer '.$response->json('token'))
             ->get('user')

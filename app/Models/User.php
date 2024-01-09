@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -19,6 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon $birthday
  * @property Collection $likesToUsers
  * @property Collection $likesFromUsers
+ * @property null|Profile $profile
  */
 class User extends Authenticatable
 {
@@ -75,5 +77,10 @@ class User extends Authenticatable
     public function media(): HasMany
     {
         return $this->hasMany(Medium::class);
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
     }
 }

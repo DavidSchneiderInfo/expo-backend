@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
-class UserLikesTest extends TestCase
+class ProfileLikesTest extends TestCase
 {
     use DatabaseMigrations;
 
     public function testUserCanGiveAndReceiveLikes(): void
     {
-        /** @var User $giving */
-        $giving = User::factory()->create();
+        /** @var Profile $giving */
+        $giving = Profile::factory()->create();
 
-        /** @var User $receiving */
-        $receiving = User::factory()->create();
+        /** @var Profile $receiving */
+        $receiving = Profile::factory()->create();
 
         $this->assertEquals(0, $giving->likesToUsers()->count());
         $this->assertEquals(0, $giving->likesFromUsers()->count());

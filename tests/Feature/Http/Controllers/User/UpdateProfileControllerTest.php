@@ -1,51 +1,31 @@
 <?php
 
-declare(strict_types=1);
+namespace Tests\Feature\Http\Controllers\User;
 
-namespace Tests\Feature;
-
+use App\Exceptions\ProfileException;
 use App\Models\User;
+use App\Profile\Actions\CreateProfile;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class ProfileTest extends TestCase
+class UpdateProfileControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function testUserDetailsAreCorrect(): void
-    {
-        $user = User::factory()->create([
-            'name' => 'Hans Peter',
-            'email' => 'hans@peter.com',
-            'bio' => 'lorem ipsum',
-            'birthday' => '1981-10-20',
-        ]);
-        Sanctum::actingAs($user);
-
-        $response = $this->get('/user');
-
-        $response->assertOk()
-            ->assertJson([
-                'id' => $user->id,
-                'name' => 'Hans Peter',
-                'email' => 'hans@peter.com',
-                'bio' => 'lorem ipsum',
-                'birthday' => '1981-10-20',
-            ]);
-    }
-
     /**
      * @dataProvider providePersonalDetailsPatches
+     * @throws ProfileException
      */
     public function testUserCanUpdatePersonalDetails(array $requestData): void
     {
-        $user = User::factory()->create([
+        $user = User::factory()->create();
+        $this->updateProfile()->create($user, [
             'name' => 'Hans Peter',
             'email' => 'hans@peter.com',
-            'bio' => 'lorem ipsum',
             'birthday' => '1981-10-20',
         ]);
+        $user->refresh();
 
         Sanctum::actingAs($user);
 
@@ -60,7 +40,6 @@ class ProfileTest extends TestCase
             'just the name' => [
                 [
                     'name' => 'Peter Hans',
-                    'email' => 'hans@peter.com',
                     'bio' => 'lorem ipsum',
                     'birthday' => '1981-10-20',
                 ],
@@ -68,19 +47,22 @@ class ProfileTest extends TestCase
             'all of it' => [
                 [
                     'name' => 'Peter Hans',
-                    'email' => 'peter@hans.com',
                     'bio' => 'ipsum lorem',
                     'birthday' => '1911-01-02',
                 ],
             ],
-            'same name and email' => [
+            'same name' => [
                 [
                     'name' => 'Hans Peter',
-                    'email' => 'hans@peter.com',
                     'bio' => 'ipsum lorem',
                     'birthday' => '1981-10-20',
                 ],
             ],
         ];
+    }
+
+    private function updateProfile(): CreateProfile
+    {
+        return $this->app->make(CreateProfile::class);
     }
 }

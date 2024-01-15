@@ -1,19 +1,16 @@
 <?php
 
-use App\Auth\Actions\CreateToken;
-use App\Http\Resources\ProfileResource;
-use App\Http\Resources\SuccessfulAuthenticationResource;
-use App\Http\Resources\UserResource;
-use App\Models\Medium;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RefreshSessionController;
+use App\Http\Controllers\Auth\SignUpController;
+use App\Http\Controllers\Match\GetMatchListController;
+use App\Http\Controllers\Match\MatchController;
+use App\Http\Controllers\User\UpdateProfileController;
+use App\Http\Controllers\User\UploadMediaController;
 use App\Models\User;
-use App\Repositories\MatchRepository;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,127 +23,16 @@ use Illuminate\Support\Str;
 |
 */
 
-Route::post('auth/sign-in', function (Request $request, CreateToken $tokenAction) {
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+Route::middleware('auth:sanctum')->group(function (Router $router) {
 
-    /** @var User $user */
-    $user = User::query()
-        ->where('email', $credentials['email'])
-        ->first();
+    $router->post('auth/refresh', RefreshSessionController::class);
+    $router->patch('user', UpdateProfileController::class);
+    $router->post('upload/media', UploadMediaController::class);
+    $router->get('match', GetMatchListController::class);
+    $router->post('match', MatchController::class);
 
-    if($user === null || Auth::validate($credentials) !== true)
-    {
-        return response()->json([
-            'message' => 'The provided credentials are incorrect.'
-        ], 401);
-    }
-
-    $token = $tokenAction->getTokenForUser($user);
-
-    return new SuccessfulAuthenticationResource($user, $token);
 });
 
-Route::post('auth/sign-up', function (Request $request, CreateToken $tokenAction) {
-    $request->validate([
-        'username' => 'required|string|between:6,32',
-        'email' => 'required|email',
-        'password' => 'required',
-        'birthday' => 'required|date',
-    ]);
-
-    try {
-        $user = new User([
-            'name' => $request->get('username'),
-            'password' => bcrypt($request->get('password')),
-            'email' => $request->get('email'),
-            'birthday' => $request->get('birthday'),
-        ]);
-        $user->save();
-    }
-    catch (UniqueConstraintViolationException)
-    {
-        return response()->json([
-            'message' => 'These credentials have already been taken.',
-        ], 409);
-    }
-
-    $token = $tokenAction->getTokenForUser($user);
-
-    return new SuccessfulAuthenticationResource($user, $token);
-});
-
-Route::middleware('auth:sanctum')->group(function ($router) {
-    $router->get('/user', function (Request $request) {
-        return new UserResource($request->user());
-    });
-
-    $router->patch('/user', function (Request $request) {
-        $requestData = $request->validate([
-            'birthday' => 'required',
-            'name' => 'required',
-            'email' => 'required',
-            'bio' => 'required',
-        ]);
-
-        /** @var User $user */
-        $user = $request->user();
-        $user->update($requestData);
-
-        return new UserResource($user);
-    });
-
-    $router->get('/match', function (Request $request, MatchRepository $repo) {
-        return ProfileResource::collection(
-            $repo->getProfiles($request->user())
-        );
-    });
-
-    $router->post('/match', function (Request $request) {
-        /** @var User $givingUser */
-        $givingUser = $request->user();
-
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
-
-        /** @var User $receivingUser */
-        $userId = (int)$request->get('user_id');
-        $receivingUser = User::query()->findOrFail($userId);
-
-        $givingUser->likesToUsers()->save($receivingUser);
-
-        return response()->json([
-            'match' => $givingUser->likesFromUsers()->where('user_id', $userId)->count() > 0
-        ]);
-    });
-
-    $router->post('upload/media', function (Request $request) {
-        $request->validate([
-            'media' => 'required|array',
-            'media.*' => 'required|file',
-        ]);
-
-        /** @var User $user */
-        $user = $request->user();
-
-        foreach ($request->file('media') as $media)
-        {
-            /** @var UploadedFile $media */
-            $fileName = Str::uuid()->toString()
-                . '.'
-                . $media->extension();
-
-            $fullPath = Storage::disk('profiles')->putFileAs($user->id, $media, $fileName);
-
-            $user->media()->save(new Medium([
-                'path' => $fullPath,
-            ]));
-        }
-
-        return response()->json();
-    });
-});
+Route::post('auth/sign-in', LoginController::class);
+Route::post('auth/sign-up', SignUpController::class);
 

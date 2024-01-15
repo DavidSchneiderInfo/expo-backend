@@ -23,6 +23,7 @@ class CreateProfile
         $profile = new Profile($attributes);
 
         $user->profile()->save($profile);
+        $profile->refresh();
 
         return $profile;
     }

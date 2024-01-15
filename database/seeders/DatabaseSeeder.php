@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Photo;
+use App\Models\Profile;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -17,15 +18,19 @@ class DatabaseSeeder extends Seeder
     {
         $this->createUsers();
 
+        /** @var User $me */
         $me = User::firstOrCreate([
             'email' => 'd4vid81@gmail.com',
         ], [
-            'name' => 'David',
-            'bio' => 'Some cool dude doing crazy tech stuff',
             'password' => bcrypt('secret12'),
-            'birthday' => '1981-10-20',
             'email_verified_at' => Carbon::now(),
         ]);
+
+        $me->profile()->save(new Profile([
+            'name' => 'David',
+            'bio' => 'Some cool dude doing crazy tech stuff',
+            'birthday' => '1981-10-20',
+        ]));
 
         $this->createUsers($me);
     }
@@ -33,9 +38,9 @@ class DatabaseSeeder extends Seeder
     public function createUsers(?User $me = null): void
     {
 
-        User::factory(100)->create()->each(function (User $user) use ($me) {
+        Profile::factory(100)->create()->each(function (Profile $profile) use ($me) {
             if($me)
-                $user->likesToUsers()->save($me);
+                $profile->user->likesToUsers()->save($me);
         });
     }
 }

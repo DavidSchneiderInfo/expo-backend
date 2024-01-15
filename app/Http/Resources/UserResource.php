@@ -11,9 +11,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class UserResource extends JsonResource
 {
-    public function __construct(User $resource)
+    public function __construct(private readonly User $user)
     {
-        parent::__construct($resource);
+        parent::__construct(null);
         parent::withoutWrapping();
     }
 
@@ -25,12 +25,11 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->resource->id,
-            'name' => $this->resource->name,
-            'email' => $this->resource->email,
-            'birthday' => $this->resource->birthday,
-            'bio' => $this->resource->bio,
-            'avatar' => null,
+            'id' => $this->user->id,
+            'name' => $this->user->profile->name,
+            'email' => $this->user->email,
+            'birthday' => $this->user->profile->birthday,
+            'bio' => $this->user->profile->bio,
         ];
     }
 }

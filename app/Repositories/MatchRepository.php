@@ -4,18 +4,22 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use App\Models\Profile;
+use Illuminate\Database\Eloquent\Builder;
 
 final class MatchRepository
 {
-    public function getProfiles(User $user): Collection|array
+    private function __construct(private readonly Profile $profile) {}
+    public static function forProfile(Profile $profile): self
     {
-        return User::query()
-            ->whereNot('id', $user->id)
-            ->whereNotIn('id', $user->likesToUsers->keyBy('id')->keys())
+        return new self($profile);
+    }
+    public function getProfiles(): Builder
+    {
+        return Profile::query()
             ->inRandomOrder()
-            ->limit(50)
-            ->get();
+            ->whereNot('id', $this->profile->id)
+            ->whereNotIn('id', $this->profile->likesToUsers->keyBy('id')->keys())
+            ->where('active', true);
     }
 }

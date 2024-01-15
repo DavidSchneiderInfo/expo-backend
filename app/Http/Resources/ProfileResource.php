@@ -2,17 +2,17 @@
 
 namespace App\Http\Resources;
 
-use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 
 /**
- * @property User $resource
+ * @property Profile $resource
  */
 class ProfileResource extends JsonResource
 {
-    public function __construct(User $resource)
+    public function __construct(Profile $resource)
     {
         parent::__construct($resource);
         parent::withoutWrapping();
@@ -29,16 +29,16 @@ class ProfileResource extends JsonResource
             ? Carbon::createFromFormat("Y-m-d", $this->resource->birthday)->age
             : null;
 
-        $media = $this->resource->media()->get();
+        $media = $this->resource->media->toArray();
 
         return [
-            'id' => $this->resource->id,
+            'id' => $this->resource->user_id,
             'name' => $this->resource->name,
             'bio' => $this->resource->bio,
+            'height' => $this->resource->height,
             'age' => $age,
-            'media' => $media->count()>0
-                ? $media->toArray()
-                : [],
+            'sex' => $this->resource->sex,
+            'media' => $media,
         ];
     }
 }

@@ -31,10 +31,7 @@ class SuccessfulAuthenticationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => [
-                'name' => $this->user->name,
-                'birthday' => $this->user->birthday,
-            ],
+            'user' => $this->user->profile->toArray(),
             'token' => $this->token->plainTextToken,
             'expires_at' => $this->token->accessToken->expires_at,
         ];

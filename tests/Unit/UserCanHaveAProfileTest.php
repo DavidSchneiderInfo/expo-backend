@@ -19,7 +19,7 @@ class UserCanHaveAProfileTest extends TestCase
      * @dataProvider provideUpdateScenarios
      * @throws ProfileException
      */
-    public function testNewUserCanCreateProfile(array $attributes): void
+    public function testNewUserCanCreateProfile(array $attributes, array $expected): void
     {
         /** @var User $user */
         $user = User::factory()->create();
@@ -34,7 +34,7 @@ class UserCanHaveAProfileTest extends TestCase
         $profileArray = $profile->toArray();
         $this->assertArrayHasKey('updated_at', $profileArray);
         unset($profileArray['updated_at']);
-        $this->assertEquals($profileArray, array_merge($this->defaults(), $attributes));
+        $this->assertEquals($profileArray, $expected);
     }
 
     public static function provideUpdateScenarios(): array
@@ -45,12 +45,28 @@ class UserCanHaveAProfileTest extends TestCase
                     'name' => 'Hans Dampf',
                     'birthday' => '1999-11-21',
                 ],
+                [
+                    'name' => 'Hans Dampf',
+                    'age' => 24,
+                    'media' => [],
+                    'sex' => Sex::x,
+                    'height' => null,
+                    'bio' => null,
+                ],
             ],
             'sex to f' => [
                 [
                     'name' => 'Hans Dampf',
                     'birthday' => '1999-11-21',
                     'sex' => Sex::f,
+                ],
+                [
+                    'name' => 'Hans Dampf',
+                    'age' => 24,
+                    'media' => [],
+                    'sex' => Sex::f,
+                    'height' => null,
+                    'bio' => null,
                 ],
             ],
             'sex to m' => [
@@ -59,6 +75,14 @@ class UserCanHaveAProfileTest extends TestCase
                     'birthday' => '1999-11-21',
                     'sex' => Sex::m,
                 ],
+                [
+                    'name' => 'Hans Dampf',
+                    'age' => 24,
+                    'media' => [],
+                    'sex' => Sex::m,
+                    'height' => null,
+                    'bio' => null,
+                ],
             ],
             'sex to x' => [
                 [
@@ -66,12 +90,28 @@ class UserCanHaveAProfileTest extends TestCase
                     'birthday' => '1999-11-21',
                     'sex' => Sex::x,
                 ],
+                [
+                    'name' => 'Hans Dampf',
+                    'age' => 24,
+                    'media' => [],
+                    'sex' => Sex::x,
+                    'height' => null,
+                    'bio' => null,
+                ],
             ],
             'height to 180' => [
                 [
                     'name' => 'Hans Dampf',
                     'birthday' => '1999-11-21',
                     'height' => 180,
+                ],
+                [
+                    'name' => 'Hans Dampf',
+                    'age' => 24,
+                    'media' => [],
+                    'sex' => Sex::x,
+                    'height' => 180,
+                    'bio' => null,
                 ],
             ],
             'height to 170, sex to m' => [
@@ -81,6 +121,14 @@ class UserCanHaveAProfileTest extends TestCase
                     'height' => 170,
                     'sex' => Sex::m,
                 ],
+                [
+                    'name' => 'Hans Dampf',
+                    'age' => 24,
+                    'media' => [],
+                    'sex' => Sex::m,
+                    'height' => 170,
+                    'bio' => null,
+                ],
             ],
         ];
     }
@@ -88,16 +136,5 @@ class UserCanHaveAProfileTest extends TestCase
     public function createAction(): CreateProfile
     {
         return $this->app->make(CreateProfile::class);
-    }
-
-    private function defaults(): array
-    {
-        return [
-            'name' => 'Hans Dampf',
-            'birthday' => '1999-11-21',
-            'sex' => Sex::x,
-            'height' => null,
-            'bio' => null,
-        ];
     }
 }

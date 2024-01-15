@@ -24,6 +24,7 @@ class CreateProfile
 
         $user->profile()->save($profile);
         $profile->refresh();
+        $user->refresh();
 
         return $profile;
     }

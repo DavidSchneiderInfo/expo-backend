@@ -86,11 +86,12 @@ class Profile extends Model
     {
         return [
             'name' => $this->name,
-            'birthday' => $this->birthday,
+            'age' => Carbon::createFromFormat('Y-m-d', $this->birthday)->age,
             'bio' => $this->bio ?? '',
             'height' => $this->height,
             'sex' => $this->sex,
             'updated_at' => $this->updated_at->toISOString(),
+            'media' => $this->media->toArray(),
         ];
     }
 }

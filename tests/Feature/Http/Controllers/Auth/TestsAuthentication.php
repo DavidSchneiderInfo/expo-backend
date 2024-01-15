@@ -14,7 +14,11 @@ trait TestsAuthentication {
         return [
             'user' => [
                 'name',
-                'birthday',
+                'age',
+                'sex',
+                'bio',
+                'media',
+                'height',
             ],
             'token',
             'expires_at'

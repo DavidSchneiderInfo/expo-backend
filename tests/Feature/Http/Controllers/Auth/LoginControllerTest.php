@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -12,10 +13,12 @@ class LoginControllerTest extends TestCase
 
     public function testUserCanSignIn(): void
     {
-        $password = Str::password();
+        $profile = Profile::factory()->create([]);
 
+        $password = Str::password();
         /** @var User $user */
-        $user = User::factory()->create([
+        $user = User::query()->findOrFail($profile->user_id);
+        $user->update([
             'password' => bcrypt($password),
         ]);
 

@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Photo;
 use App\Models\Profile;
 use App\Models\User;
 use Carbon\Carbon;
@@ -37,10 +35,9 @@ class DatabaseSeeder extends Seeder
 
     public function createUsers(?User $me = null): void
     {
-
         Profile::factory(100)->create()->each(function (Profile $profile) use ($me) {
             if($me)
-                $profile->user->likesToUsers()->save($me);
+                $profile->likesToUsers()->save($me->profile);
         });
     }
 }

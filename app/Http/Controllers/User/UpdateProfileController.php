@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Exceptions\ProfileException;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\ProfileResource;
 use App\Models\User;
 use App\Profile\Actions\UpdateProfile;
 use Illuminate\Http\Request;
@@ -18,19 +18,18 @@ class UpdateProfileController extends Controller
     /**
      * @throws ProfileException
      */
-    public function __invoke(Request $request): UserResource
+    public function __invoke(Request $request): ProfileResource
     {
         $requestData = $request->validate([
-            'birthday' => 'required',
-            'name' => 'required',
-            'bio' => 'required',
+            'name' => 'sometimes|string|between:1,20',
+            'bio' => 'sometimes|string|between:1,500',
+            'sex' => 'sometimes|in:f,m,x',
+            'height' => 'sometimes|integer|between:60,240',
         ]);
 
         /** @var User $user */
         $user = $request->user();
 
-        $this->updateProfile->update($user, $requestData);
-
-        return new UserResource($user);
+        return new ProfileResource($this->updateProfile->update($user, $requestData));
     }
 }

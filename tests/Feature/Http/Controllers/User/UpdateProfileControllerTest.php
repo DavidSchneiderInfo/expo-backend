@@ -22,7 +22,6 @@ class UpdateProfileControllerTest extends TestCase
         $user = User::factory()->create();
         $this->updateProfile()->create($user, [
             'name' => 'Hans Peter',
-            'email' => 'hans@peter.com',
             'birthday' => '1981-10-20',
         ]);
         $user->refresh();
@@ -40,22 +39,27 @@ class UpdateProfileControllerTest extends TestCase
             'just the name' => [
                 [
                     'name' => 'Peter Hans',
-                    'bio' => 'lorem ipsum',
-                    'birthday' => '1981-10-20',
                 ],
             ],
-            'all of it' => [
+            'just the bio' => [
                 [
-                    'name' => 'Peter Hans',
                     'bio' => 'ipsum lorem',
-                    'birthday' => '1911-01-02',
                 ],
             ],
-            'same name' => [
+            'just the sex' => [
+                [
+                    'sex' => 'f',
+                ],
+            ],
+            'just the height' => [
+                [
+                    'height' => 199,
+                ],
+            ],
+            'same name, different bio' => [
                 [
                     'name' => 'Hans Peter',
                     'bio' => 'ipsum lorem',
-                    'birthday' => '1981-10-20',
                 ],
             ],
         ];

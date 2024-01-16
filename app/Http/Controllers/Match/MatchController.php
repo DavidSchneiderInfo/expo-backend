@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Match;
 
+use App\Http\Resources\MatchResource;
 use App\Models\Profile;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MatchController
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): MatchResource
     {
         /** @var Profile $givingUser */
         $givingUser = $request->user()->profile;
@@ -26,8 +26,6 @@ class MatchController
 
         $givingUser->likesToUsers()->save($receivingUser);
 
-        return response()->json([
-            'match' => $givingUser->likesFromUsers()->where('user_id', $userId)->count() > 0
-        ]);
+        return new MatchResource($givingUser->likesFromUsers()->where('user_id', $userId)->count() > 0);
     }
 }

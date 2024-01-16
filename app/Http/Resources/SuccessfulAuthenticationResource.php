@@ -30,12 +30,12 @@ class SuccessfulAuthenticationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $profile = new ProfileResource($this->user->profile);
         return [
-            'user' => $this->user->profile->toArray(),
+            'user' => $profile->toArray($request),
             'token' => $this->token->plainTextToken,
             'expires_at' => $this->token->accessToken->expires_at,
         ];
     }
-
 
 }

@@ -62,6 +62,40 @@ class UpdateProfileControllerTest extends TestCase
                     'bio' => 'ipsum lorem',
                 ],
             ],
+            'interested in female' => [
+                [
+                    'i_f' => true,
+                ]
+            ],
+            'interested in male' => [
+                [
+                    'i_m' => true,
+                ]
+            ],
+            'interested in other' => [
+                [
+                    'i_x' => true,
+                ]
+            ],
+            'interested in female + other' => [
+                [
+                    'i_f' => true,
+                    'i_x' => true,
+                ]
+            ],
+            'interested in other + male' => [
+                [
+                    'i_x' => true,
+                    'i_m' => true,
+                ]
+            ],
+            'interested in all' => [
+                [
+                    'i_f' => true,
+                    'i_x' => true,
+                    'i_m' => true,
+                ]
+            ],
         ];
     }
 

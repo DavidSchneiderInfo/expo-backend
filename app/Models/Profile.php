@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Sex;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property null|int $id
@@ -24,6 +26,10 @@ use Illuminate\Support\Carbon;
  * @property null|int $longitude
  * @property null|int $latitude
  * @property Sex $sex
+ * @property bool $i_f
+ * @property bool $i_m
+ * @property bool $i_x
+ * @property bool $active
  * @property Carbon $updated_at
  * @property Collection $media
  */
@@ -55,6 +61,9 @@ class Profile extends Model
         'height',
         'longitude',
         'latitude',
+        'i_f',
+        'i_m',
+        'i_x',
     ];
 
     public function user(): BelongsTo
@@ -82,16 +91,36 @@ class Profile extends Model
         return $this->hasMany(Medium::class);
     }
 
+    /**
+     * @throws Exception
+     */
     public function toArray(): array
     {
         return [
             'name' => $this->name,
-            'age' => Carbon::createFromFormat('Y-m-d', $this->birthday)->age,
+            'age' => $this->age(),
             'bio' => $this->bio ?? '',
             'height' => $this->height,
             'sex' => $this->sex,
             'updated_at' => $this->updated_at->toISOString(),
             'media' => $this->media->toArray(),
         ];
+    }
+
+    public function age(): int|null
+    {
+        try
+        {
+            return Carbon::createFromFormat('Y-m-d', $this->birthday)->age;
+        }
+        catch (Exception $e)
+        {
+            Log::error('Error calculating age', [
+                'userId' => $this->user_id,
+                'birthday' => $this->attributes['birthday'],
+                'exception' => $e,
+            ]);
+            return null;
+        }
     }
 }

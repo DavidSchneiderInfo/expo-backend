@@ -15,14 +15,16 @@ class MatchControllerTest extends TestCase
 
     public function testUsersCanMatch(): void
     {
-        /** @var Profile $user */
-        $user = Profile::factory()->create();
+        /** @var Profile $profile */
+        $profile = Profile::factory()->create();
         /** @var Profile $match */
         $match = Profile::factory()->create();
 
-        $match->likesToUsers()->save($user);
+        $match->likesToUsers()->save($profile);
 
-        Sanctum::actingAs($user->user);
+        $this->assertNotNull($profile->likesFromUsers->find($match->id));
+
+        Sanctum::actingAs($profile->user);
 
         $this->post('/match', [
             'user_id' => $match->id,

@@ -38,6 +38,9 @@ class ProfileResource extends JsonResource
             'height' => $this->resource->height,
             'age' => $age,
             'sex' => $this->resource->sex,
+            'i_f' => $this->resource->i_f,
+            'i_m' => $this->resource->i_m,
+            'i_x' => $this->resource->i_x,
             'media' => $media,
         ];
     }

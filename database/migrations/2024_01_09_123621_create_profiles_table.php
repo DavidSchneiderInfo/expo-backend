@@ -25,6 +25,9 @@ return new class extends Migration
                 Sex::m,
                 Sex::x,
             ])->default(Sex::x);
+            $table->boolean('i_f')->nullable(false)->default(false);
+            $table->boolean('i_m')->nullable(false)->default(false);
+            $table->boolean('i_x')->nullable(false)->default(false);
             $table->double('latitude', 10,8)->nullable()->default(null);
             $table->double('longitude', 11,8)->nullable()->default(null);
             $table->unsignedTinyInteger('height')->nullable()->default(null);

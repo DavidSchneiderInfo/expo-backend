@@ -33,6 +33,7 @@ class SuccessfulAuthenticationResource extends JsonResource
         $profile = new ProfileResource($this->user->profile);
         return [
             'user' => $profile->toArray($request),
+            'active' => $this->user->profile->active,
             'token' => $this->token->plainTextToken,
             'expires_at' => $this->token->accessToken->expires_at,
         ];

@@ -21,7 +21,22 @@ class UpdateProfile
         }
 
         $user->profile->update($attributes);
+        $this->checkForActivation($user->profile);
 
         return $user->profile;
+    }
+
+    private function checkForActivation(Profile $profile): void
+    {
+        if(!$profile->active)
+        {
+            if(!$profile->i_f && !$profile->i_m && !$profile->i_x)
+            {
+                return;
+            }
+
+            $profile->active = true;
+            $profile->save();
+        }
     }
 }

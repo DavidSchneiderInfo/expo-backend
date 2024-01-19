@@ -66,6 +66,10 @@ class Profile extends Model
         'i_x',
     ];
 
+    protected $casts = [
+        'active'=> 'bool'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

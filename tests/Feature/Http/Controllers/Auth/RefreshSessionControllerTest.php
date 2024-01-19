@@ -11,7 +11,7 @@ class RefreshSessionControllerTest extends TestCase
 {
     use TestsAuthentication;
 
-    public function test_example(): void
+    public function testRefreshingASession(): void
     {
         $user = User::factory()
             ->has(
@@ -24,5 +24,7 @@ class RefreshSessionControllerTest extends TestCase
 
         $response->assertSuccessful()
             ->assertJsonStructure($this->expectedStructure());
+
+        $this->assertIsBool($response->json('active'));
     }
 }

@@ -25,23 +25,17 @@ class ProfileResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $age = $this->resource->birthday !== null
-            ? Carbon::createFromFormat("Y-m-d", $this->resource->birthday)->age
-            : null;
-
-        $media = $this->resource->media->toArray();
-
         return [
             'id' => $this->resource->user_id,
             'name' => $this->resource->name,
             'bio' => $this->resource->bio,
             'height' => $this->resource->height,
-            'age' => $age,
+            'age' => $this->resource->age(),
             'sex' => $this->resource->sex,
             'i_f' => $this->resource->i_f,
             'i_m' => $this->resource->i_m,
             'i_x' => $this->resource->i_x,
-            'media' => $media,
+            'media' => $this->resource->media->toArray(),
         ];
     }
 }

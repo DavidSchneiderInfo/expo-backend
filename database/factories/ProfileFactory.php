@@ -33,11 +33,14 @@ class ProfileFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => $name,
-            'birthday' => fake()->dateTimeBetween('-50 years', '-18 years'),
+            'birthday' => fake()->dateTimeBetween('-50 years', '-18 years')->format('Y-m-d'),
             'bio' => fake()->words(rand(10,20), true),
             'sex' => $gender,
             'height' => rand(150,210),
             'active' => true,
+            'i_f' => true,
+            'i_m' => true,
+            'i_x' => true,
         ];
     }
 }

@@ -64,10 +64,14 @@ class Profile extends Model
         'i_f',
         'i_m',
         'i_x',
+        'active',
     ];
 
     protected $casts = [
-        'active'=> 'bool'
+        'active'=> 'bool',
+        'i_f'=> 'bool',
+        'i_m'=> 'bool',
+        'i_x'=> 'bool',
     ];
 
     public function user(): BelongsTo
@@ -108,6 +112,9 @@ class Profile extends Model
             'sex' => $this->sex,
             'updated_at' => $this->updated_at->toISOString(),
             'media' => $this->media->toArray(),
+            'i_f' => $this->i_f,
+            'i_m' => $this->i_m,
+            'i_x' => $this->i_x,
         ];
     }
 

@@ -13,12 +13,10 @@ class RefreshSessionControllerTest extends TestCase
 
     public function testRefreshingASession(): void
     {
-        $user = User::factory()
-            ->has(
-                Profile::factory()
-            )->create();
+        /** @var Profile $profile */
+        $profile = Profile::factory()->create();
 
-        Sanctum::actingAs($user);
+        Sanctum::actingAs($profile->user);
 
         $response = $this->post('auth/refresh');
 
@@ -26,5 +24,8 @@ class RefreshSessionControllerTest extends TestCase
             ->assertJsonStructure($this->expectedStructure());
 
         $this->assertIsBool($response->json('active'));
+        $this->assertIsBool($response->json('user.i_f'));
+        $this->assertIsBool($response->json('user.i_m'));
+        $this->assertIsBool($response->json('user.i_x'));
     }
 }

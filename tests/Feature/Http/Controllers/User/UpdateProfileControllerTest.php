@@ -5,13 +5,13 @@ namespace Tests\Feature\Http\Controllers\User;
 use App\Exceptions\ProfileException;
 use App\Models\User;
 use App\Profile\Actions\CreateProfile;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\RefreshDatabaseFast;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UpdateProfileControllerTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabaseFast;
 
     /**
      * @dataProvider providePersonalDetailsPatches

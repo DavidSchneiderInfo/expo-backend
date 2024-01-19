@@ -8,12 +8,12 @@ use App\Enums\Sex;
 use App\Exceptions\ProfileException;
 use App\Models\User;
 use App\Profile\Actions\CreateProfile;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\RefreshDatabaseFast;
 use Tests\TestCase;
 
 class UserCanHaveAProfileTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabaseFast;
 
     /**
      * @dataProvider provideUpdateScenarios

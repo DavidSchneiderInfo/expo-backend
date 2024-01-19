@@ -3,14 +3,14 @@
 namespace Tests\Feature\Http\Controllers\User;
 
 use App\Models\Profile;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\RefreshDatabaseFast;
 use Illuminate\Http\UploadedFile;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UploadMediaControllerTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabaseFast;
 
     public function testUserCanUploadMedia(): void
     {

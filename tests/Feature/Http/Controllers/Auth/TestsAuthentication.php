@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\RefreshDatabaseFast;
 
 trait TestsAuthentication {
-    use DatabaseMigrations;
+    use RefreshDatabaseFast;
 
     private function expectedStructure(): array
     {

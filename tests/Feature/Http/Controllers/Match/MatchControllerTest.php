@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Match;
 
 use App\Models\Profile;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\RefreshDatabaseFast;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class MatchControllerTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabaseFast;
 
     public function testUsersCanMatch(): void
     {

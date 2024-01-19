@@ -4,13 +4,13 @@ namespace Tests\Feature\Http\Controllers\Match;
 
 use App\Models\Profile;
 use App\Profile\Actions\CreateProfile;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\RefreshDatabaseFast;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class GetListControllerTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabaseFast;
 
     /**
      * A basic feature test example.

@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('profile_likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('profile_id')
+            $table->foreignUuid('profile_id')
                 ->references('id')
                 ->on('profiles')
                 ->cascadeOnDelete();
-            $table->foreignId('profile_liked_id')
+            $table->foreignUuid('profile_liked_id')
                 ->references('id')
                 ->on('profiles')
                 ->cascadeOnDelete();

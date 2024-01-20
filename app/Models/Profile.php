@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * @property null|int $id
@@ -36,6 +37,9 @@ use Illuminate\Support\Facades\Log;
 class Profile extends Model
 {
     use HasFactory;
+
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -73,6 +77,12 @@ class Profile extends Model
         'i_m'=> 'bool',
         'i_x'=> 'bool',
     ];
+
+    public static function booted() {
+        static::creating(function ($model) {
+            $model->id = Str::uuid();
+        });
+    }
 
     public function user(): BelongsTo
     {

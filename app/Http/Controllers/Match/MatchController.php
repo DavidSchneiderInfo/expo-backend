@@ -24,7 +24,7 @@ class MatchController
         try
         {
             /** @var Profile $receivingUser */
-            $receivingUser = Profile::query()->findOrFail((int)$request->get('user_id'));
+            $receivingUser = Profile::query()->findOrFail($request->get('user_id'));
             $givingUser->likesToUsers()->save($receivingUser);
             return new MatchResource($givingUser->likesFromUsers()->where('user_id', $receivingUser->user_id)->count() > 0);
 

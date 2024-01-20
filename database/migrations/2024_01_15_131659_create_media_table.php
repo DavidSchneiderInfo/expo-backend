@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('profile_id')
+            $table->foreignUuid('profile_id')
                 ->references('id')
                 ->on('profiles')
                 ->cascadeOnDelete();

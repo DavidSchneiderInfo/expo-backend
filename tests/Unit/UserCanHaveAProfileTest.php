@@ -55,6 +55,9 @@ class UserCanHaveAProfileTest extends TestCase
                     'i_f' => false,
                     'i_m' => false,
                     'i_x' => false,
+                    'maxDistance' => null,
+                    'latitude' => null,
+                    'longitude' => null,
                 ],
             ],
             'sex to f' => [
@@ -73,6 +76,9 @@ class UserCanHaveAProfileTest extends TestCase
                     'i_f' => false,
                     'i_m' => false,
                     'i_x' => false,
+                    'maxDistance' => null,
+                    'latitude' => null,
+                    'longitude' => null,
                 ],
             ],
             'sex to m' => [
@@ -91,6 +97,9 @@ class UserCanHaveAProfileTest extends TestCase
                     'i_f' => false,
                     'i_m' => false,
                     'i_x' => false,
+                    'maxDistance' => null,
+                    'latitude' => null,
+                    'longitude' => null,
                 ],
             ],
             'sex to x' => [
@@ -109,6 +118,9 @@ class UserCanHaveAProfileTest extends TestCase
                     'i_f' => false,
                     'i_m' => false,
                     'i_x' => false,
+                    'maxDistance' => null,
+                    'latitude' => null,
+                    'longitude' => null,
                 ],
             ],
             'height to 180' => [
@@ -127,6 +139,9 @@ class UserCanHaveAProfileTest extends TestCase
                     'i_f' => false,
                     'i_m' => false,
                     'i_x' => false,
+                    'maxDistance' => null,
+                    'latitude' => null,
+                    'longitude' => null,
                 ],
             ],
             'height to 170, sex to m' => [
@@ -146,6 +161,9 @@ class UserCanHaveAProfileTest extends TestCase
                     'i_f' => false,
                     'i_m' => false,
                     'i_x' => false,
+                    'maxDistance' => null,
+                    'latitude' => null,
+                    'longitude' => null,
                 ],
             ],
         ];

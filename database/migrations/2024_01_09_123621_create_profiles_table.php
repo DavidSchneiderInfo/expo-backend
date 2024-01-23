@@ -32,6 +32,7 @@ return new class extends Migration
             $table->double('longitude', 11,8)->nullable()->default(null);
             $table->unsignedTinyInteger('height')->nullable()->default(null);
             $table->boolean('active')->default(false);
+            $table->unsignedTinyInteger('maxDistance')->nullable()->default(null);
             $table->timestamps();
         });
     }

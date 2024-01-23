@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Sex;
+use Database\Factories\ProfileFactory;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,8 +32,10 @@ use Illuminate\Support\Str;
  * @property bool $i_m
  * @property bool $i_x
  * @property bool $active
+ * @property null|int maxDistance
  * @property Carbon $updated_at
  * @property Collection $media
+ * @method static ProfileFactory factory(array|callable|int|null $count=1, array|callable $state=[])
  */
 class Profile extends Model
 {
@@ -125,6 +128,9 @@ class Profile extends Model
             'i_f' => $this->i_f,
             'i_m' => $this->i_m,
             'i_x' => $this->i_x,
+            'longitude' => $this->longitude,
+            'latitude' => $this->latitude,
+            'maxDistance' => $this->maxDistance,
         ];
     }
 

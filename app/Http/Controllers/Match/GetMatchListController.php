@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Match;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Match\MatchRequest;
 use App\Http\Resources\ProfileResource;
 use App\Models\Profile;
 use App\Repositories\MatchRepository;
@@ -11,7 +12,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class GetMatchListController extends Controller
 {
-    public function __invoke(Request $request): AnonymousResourceCollection
+    public function __invoke(MatchRequest $request): AnonymousResourceCollection
     {
         /** @var Profile $profile */
         $profile = $request->user()->profile;

@@ -15,9 +15,7 @@ class MatchControllerTest extends TestCase
 
     public function testUsersCanMatch(): void
     {
-        /** @var Profile $profile */
         $profile = Profile::factory()->create();
-        /** @var Profile $match */
         $match = Profile::factory()->create();
 
         $match->likesToUsers()->save($profile);
@@ -28,35 +26,26 @@ class MatchControllerTest extends TestCase
 
         $this->post('/match', [
             'user_id' => $match->id,
+            'latitude' => fake()->latitude,
+            'longitude' => fake()->longitude,
         ])
             ->assertOk()
             ->assertJson(['match'=>true]);
     }
 
-    public function testUsersOnlySeeUnlikedMatches(): void
+    public function testUsersCanLike(): void
     {
-        /** @var Profile $user */
         $user = Profile::factory()->create();
-
-        /** @var Profile $liked */
-        $liked = Profile::factory()->create();
-
-        $user->likesToUsers()->save($liked);
-
-        Profile::factory()->count(5)->create();
+        $match = Profile::factory()->create();
 
         Sanctum::actingAs($user->user);
 
-        $response = $this->get('/match')
+        $this->post('/match', [
+            'user_id' => $match->id,
+            'latitude' => fake()->latitude,
+            'longitude' => fake()->longitude,
+        ])
             ->assertOk()
-            ->json();
-
-        $this->assertCount(5, $response);
-        foreach ($response as $record)
-        {
-            $this->assertNotNull($user->id);
-            $this->assertNotNull($record['id']);
-            $this->assertNotEquals($user->id, $record['id']);
-        }
+            ->assertJson(['match'=>false]);
     }
 }

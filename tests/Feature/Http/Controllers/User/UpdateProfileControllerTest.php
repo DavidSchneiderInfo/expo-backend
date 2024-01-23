@@ -20,7 +20,7 @@ class UpdateProfileControllerTest extends TestCase
     public function testUserCanUpdatePersonalDetails(array $requestData): void
     {
         $user = User::factory()->create();
-        $this->updateProfile()->create($user, [
+        $this->createAction()->create($user, [
             'name' => 'Hans Peter',
             'birthday' => '1981-10-20',
         ]);
@@ -99,7 +99,7 @@ class UpdateProfileControllerTest extends TestCase
         ];
     }
 
-    private function updateProfile(): CreateProfile
+    private function createAction(): CreateProfile
     {
         return $this->app->make(CreateProfile::class);
     }

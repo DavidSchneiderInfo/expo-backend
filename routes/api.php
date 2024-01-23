@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function (Router $router) {
     $router->post('auth/refresh', RefreshSessionController::class);
     $router->patch('user', UpdateProfileController::class);
     $router->post('upload/media', UploadMediaController::class);
-    $router->get('match', GetMatchListController::class);
+    $router->post('match/list', GetMatchListController::class);
     $router->post('match', MatchController::class);
 
 });

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Match;
 
+use App\Http\Requests\Match\MatchRequest;
 use App\Http\Resources\MatchResource;
 use App\Models\Profile;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class MatchController
 {
-    public function __invoke(Request $request): MatchResource
+    public function __invoke(MatchRequest $request): MatchResource
     {
         /** @var Profile $givingUser */
         $givingUser = $request->user()->profile;

@@ -19,6 +19,7 @@ trait TestsAuthentication {
                 'bio',
                 'media',
                 'height',
+                'distance',
             ],
             'token',
             'expires_at'

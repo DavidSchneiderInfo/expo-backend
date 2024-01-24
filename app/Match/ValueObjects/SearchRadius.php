@@ -14,7 +14,7 @@ class SearchRadius
     public function __construct(
         private readonly float $latitude,
         private readonly float $longitude,
-        private readonly int $radius
+        int $radius
     )
     {
         $this->longitudeMin = $this->longitude - $radius / abs(cos(deg2rad($this->latitude)) * 69);

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Models\Profile;
-use Tests\RefreshDatabaseFast;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ProfileLikesTest extends TestCase
 {
-    use RefreshDatabaseFast;
+    use RefreshDatabase;
 
     public function testUserCanGiveAndReceiveLikes(): void
     {

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\Sex;
+use App\Match\ValueObjects\SearchRadius;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -61,6 +62,26 @@ class ProfileFactory extends Factory
         });
     }
 
+    public function withinSearchRadius(SearchRadius $searchRadius)
+    {
+        return $this->withinCoordinates(
+            $searchRadius->latitudeMin,
+            $searchRadius->latitudeMax,
+            $searchRadius->longitudeMin,
+            $searchRadius->longitudeMax
+        );
+    }
+
+    public function outsideSearchRadius(SearchRadius $searchRadius): self
+    {
+        return $this->state(function (array $attributes) use ($searchRadius) {
+            return array_merge($attributes, [
+                'latitude' => fake()->latitude($searchRadius->latitudeMax),
+                'longitude' =>  fake()->latitude($searchRadius->longitudeMax),
+            ]);
+        });
+    }
+
     public function withCoordinates(float $latitude, float $longitude): self
     {
         return $this->state(function (array $attributes) use ($latitude, $longitude) {
@@ -80,19 +101,21 @@ class ProfileFactory extends Factory
             switch($profile->sex) {
                 case Sex::f:
                     $attributes['i_f'] = true;
-                    $attributes['sex'] = ($profile->i_f)
-                        ? Sex::f
-                        : Sex::m;
+                    $attributes['sex'] = ($profile->i_f) ? Sex::f : (($profile->i_m)
+                        ? Sex::m
+                        : Sex::x);
                     break;
                 case Sex::m:
                     $attributes['i_m'] = true;
-                    $attributes['sex'] = ($profile->i_m)
-                        ? Sex::m
-                        : Sex::f;
+                    $attributes['sex'] = ($profile->i_m) ? Sex::m : (($profile->i_f)
+                        ? Sex::f
+                        : Sex::x);
                     break;
                 case Sex::x:
                     $attributes['i_x'] = true;
-                    $attributes['sex'] = Sex::x;
+                    $attributes['sex'] = ($profile->i_x) ? Sex::x : (($profile->i_f)
+                        ? Sex::f
+                        : Sex::m);
                     break;
             }
 
@@ -108,6 +131,14 @@ class ProfileFactory extends Factory
             $attributes['i_x'] = true;
             $key = 'i_'.$profile->sex;
             $attributes[$key] = false;
+            return $attributes;
+        });
+    }
+
+    public function notActive(): self
+    {
+        return $this->state(function (array $attributes) {
+            $attributes['active'] = false;
             return $attributes;
         });
     }

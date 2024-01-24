@@ -8,16 +8,22 @@ use App\Enums\Sex;
 use App\Match\ValueObjects\SearchRadius;
 use App\Models\Profile;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 final class MatchRepository
 {
     private Builder $query;
 
     private function __construct(private readonly Profile $profile) {
+        /** @var Collection $keys */
+        $keys = $this->profile->likesToUsers->keyBy('id')->keys();
         $this->query = Profile::query()
             ->inRandomOrder()
             ->whereNot('id', $this->profile->id)
-            ->whereNotIn('id', $this->profile->likesToUsers->keyBy('id')->keys())
+            ->when($keys->count()>0, function (Builder $query) use ($keys) {
+                return $query->whereNotIn('id', $keys);
+            })
             ->where('active', true)
             ->clone();
     }
@@ -55,6 +61,7 @@ final class MatchRepository
         $this->query->whereIn('sex', $sexes)
             ->where('i_'.$this->profile->sex, true);
 
+        Log::debug($this->query->toRawSql());
         return $this;
     }
 

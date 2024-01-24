@@ -4,13 +4,13 @@ namespace Tests\Feature\Http\Controllers\Match;
 
 use App\Enums\Sex;
 use App\Models\Profile;
-use Tests\RefreshDatabaseFast;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class GetListControllerTest extends TestCase
 {
-    use RefreshDatabaseFast;
+    use RefreshDatabase;
 
     /**
      * A basic feature test example.
@@ -70,17 +70,31 @@ class GetListControllerTest extends TestCase
         }
     }
 
+
+    private function isInterestedIn(Profile $profile, Profile $interest): bool
+    {
+        $key = 'i_'.$interest->sex;
+        return $profile->$key === true;
+    }
+
+    public static function provideLikeableScenarios(): array
+    {
+        return [
+            'man liking women' => []
+        ];
+    }
     public function testEndpointShowsOnlyActiveProfiles(): void
     {
-        /** @var Profile $profile */
         $profile = Profile::factory()->create();
 
-        Profile::factory()->count(25)->create([
-            'active' => false,
-        ]);
-        Profile::factory()->count(25)->create([
-            'active' => true,
-        ]);
+        Profile::factory(5)
+            ->interestedInProfilesLike($profile)
+            ->create();
+
+        Profile::factory(5)
+            ->interestedInProfilesLike($profile)
+            ->notActive()
+            ->create();
 
         Sanctum::actingAs($profile->user);
 
@@ -93,7 +107,7 @@ class GetListControllerTest extends TestCase
             ->assertOk()
             ->json();
 
-        $this->assertCount(25, $response);
+        $this->assertCount(5, $response);
     }
 
     /**

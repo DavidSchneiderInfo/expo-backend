@@ -3,17 +3,22 @@
 namespace Tests\Feature\Http\Controllers\Match;
 
 use App\Enums\Sex;
+use App\Match\ValueObjects\SearchRadius;
 use App\Models\Profile;
+use App\Repositories\MatchRepository;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\ProvidesLikeableScenarios;
 
 class GetListControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use ProvidesLikeableScenarios;
 
     /**
-     * A basic feature test example.
+     * Test the basic endpoint, create 1 profile and 5 likeable profiles to
+     * display and make sure the endpoint shows the expected 5 profiles.
      */
     public function testEndpointWorks(): void
     {
@@ -70,13 +75,6 @@ class GetListControllerTest extends TestCase
         }
     }
 
-
-    private function isInterestedIn(Profile $profile, Profile $interest): bool
-    {
-        $key = 'i_'.$interest->sex;
-        return $profile->$key === true;
-    }
-
     public static function provideLikeableScenarios(): array
     {
         return [
@@ -87,14 +85,18 @@ class GetListControllerTest extends TestCase
     {
         $profile = Profile::factory()->create();
 
-        Profile::factory(5)
+        Profile::factory()
+            ->count(5)
             ->interestedInProfilesLike($profile)
             ->create();
 
-        Profile::factory(5)
+        Profile::factory()
+            ->count(5)
             ->interestedInProfilesLike($profile)
             ->notActive()
             ->create();
+
+        $this->assertMatchRepoCounts(5, $profile);
 
         Sanctum::actingAs($profile->user);
 
@@ -154,13 +156,25 @@ class GetListControllerTest extends TestCase
 
     public function testUsersOnlySeeUnlikedMatches(): void
     {
-        $profile = Profile::factory()->create();
-        $liked = Profile::factory()->create();
-        Profile::factory()->count(5)->create();
+        $count = 45;
 
-        $profile->likesToUsers()->save($liked);
+        $profile = Profile::factory()
+            ->create();
 
-        $this->assertNotNull($liked->id);
+        $liked = Profile::factory()
+            ->interestedInProfilesLike($profile)
+            ->count($count)
+            ->create();
+        foreach ($liked as $like) {
+            $profile->likesToUsers()->save($like);
+        }
+
+        Profile::factory()
+            ->interestedInProfilesLike($profile)
+            ->count($count)
+            ->create();
+
+        $this->assertMatchRepoCounts($count, $profile);
 
         Sanctum::actingAs($profile->user);
 
@@ -171,7 +185,7 @@ class GetListControllerTest extends TestCase
             ->assertOk()
             ->json();
 
-        $this->assertCount(5, $response);
+        $this->assertCount($count, $response);
         foreach ($response as $record)
         {
             $this->assertNotNull($record['id']);
@@ -278,64 +292,13 @@ class GetListControllerTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSexInterestScenarios
+     * @dataProvider provideLikableScenarios
      */
     public function testUserOnlySeesProfilesWithInterestingGenders(array $attributes, int $expectedResultCount): void
     {
         $profile = Profile::factory()->create($attributes);
 
-        foreach ([
-            Sex::f,
-            Sex::m,
-            Sex::x,
-         ] as $sex)
-        {
-            Profile::factory()->create([
-                'sex' => $sex,
-                'i_f' => true,
-                'i_m' => true,
-                'i_x' => true,
-            ]);
-            Profile::factory()->create([
-                'sex' => $sex,
-                'i_f' => false,
-                'i_m' => true,
-                'i_x' => true,
-            ]);
-            Profile::factory()->create([
-                'sex' => $sex,
-                'i_f' => true,
-                'i_m' => false,
-                'i_x' => true,
-            ]);
-            Profile::factory()->create([
-                'sex' => $sex,
-                'i_f' => false,
-                'i_m' => false,
-                'i_x' => true,
-            ]);
-
-            Profile::factory()->create([
-                'sex' => $sex,
-                'i_f' => true,
-                'i_m' => true,
-                'i_x' => false,
-            ]);
-
-            Profile::factory()->create([
-                'sex' => $sex,
-                'i_f' => false,
-                'i_m' => true,
-                'i_x' => false,
-            ]);
-
-            Profile::factory()->create([
-                'sex' => $sex,
-                'i_f' => true,
-                'i_m' => false,
-                'i_x' => false,
-            ]);
-        }
+        $this->prepareAllAvailableOptions();
 
         Sanctum::actingAs($profile->user);
         $coordinates = fake()->localCoordinates();
@@ -350,83 +313,5 @@ class GetListControllerTest extends TestCase
             ->json();
 
         $this->assertCount($expectedResultCount, $response);
-    }
-
-    public static function provideSexInterestScenarios(): array
-    {
-        return [
-            'Female interested in all' => [
-                [
-                    'i_f' => true,
-                    'i_m' => true,
-                    'i_x' => true,
-                    'sex' => Sex::f,
-                ],
-                4
-            ],
-            'Female interested in men and other' => [
-                [
-                    'i_f' => true,
-                    'i_m' => true,
-                    'i_x' => true,
-                    'sex' => Sex::f,
-                ],
-                4
-            ],
-            'Female interested in women and other' => [
-                [
-                    'i_f' => true,
-                    'i_m' => false,
-                    'i_x' => true,
-                    'sex' => Sex::f,
-                ],
-                4
-            ],
-            'Female interested in men' => [
-                [
-                    'i_f' => false,
-                    'i_m' => true,
-                    'i_x' => false,
-                    'sex' => Sex::f,
-                ],
-                11
-            ],
-            'Female interested in women' => [
-                [
-                    'i_f' => true,
-                    'i_m' => false,
-                    'i_x' => false,
-                    'sex' => Sex::f,
-                ],
-                11
-            ],
-            'Female interested in other' => [
-                [
-                    'i_f' => false,
-                    'i_m' => false,
-                    'i_x' => true,
-                    'sex' => Sex::f,
-                ],
-                11
-            ],
-            'Male interested in all' => [
-                [
-                    'i_f' => true,
-                    'i_m' => true,
-                    'i_x' => true,
-                    'sex' => Sex::m,
-                ],
-                11
-            ],
-            'Other interested in all' => [
-                [
-                    'i_f' => true,
-                    'i_m' => true,
-                    'i_x' => true,
-                    'sex' => Sex::x,
-                ],
-                11
-            ],
-        ];
     }
 }

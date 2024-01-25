@@ -16,6 +16,7 @@ final class MatchRepository
     private Builder $query;
 
     private function __construct(private readonly Profile $profile) {
+        $this->profile->refresh();
         /** @var Collection $keys */
         $keys = $this->profile->likesToUsers->keyBy('id')->keys();
         $this->query = Profile::query()
@@ -24,8 +25,7 @@ final class MatchRepository
             ->when($keys->count()>0, function (Builder $query) use ($keys) {
                 return $query->whereNotIn('id', $keys);
             })
-            ->where('active', true)
-            ->clone();
+            ->where('active', true);
     }
 
     public static function forProfile(Profile $profile): self
@@ -48,20 +48,19 @@ final class MatchRepository
 
     public function filterGenders(): self
     {
-        $sexes = [];
-        foreach ([
-                     $this->profile->i_f => Sex::f,
-                     $this->profile->i_m => Sex::m,
-                     $this->profile->i_x => Sex::x,
-                 ] as $interested => $sex)
-        {
-            if($interested)
-                $sexes[] = $sex;
-        }
-        $this->query->whereIn('sex', $sexes)
-            ->where('i_'.$this->profile->sex, true);
+        // show only those profiles interested in the current profile
+        $this->query->where('i_'.$this->profile->sex, true);
 
-        Log::debug($this->query->toRawSql());
+        // show only profiles the current profile is interested in
+        $sexes = [];
+        if($this->profile->i_f)
+            $sexes[] = Sex::f;
+        if($this->profile->i_m)
+            $sexes[] = Sex::m;
+        if($this->profile->i_x)
+            $sexes[] = Sex::x;
+        $this->query->whereIn('sex', $sexes);
+
         return $this;
     }
 

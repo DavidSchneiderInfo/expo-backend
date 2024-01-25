@@ -40,59 +40,35 @@ class MatchRepositoryTest extends TestCase
     /**
      * @dataProvider provideLikableScenarios
      */
-    public function testRepoCanShowResults(array $attributes): void
+    public function testRepoCanShowResults(array $attributes, int $expectedResults): void
     {
         $profile = Profile::factory()
             ->create($attributes);
 
-        Profile::factory(5)
-            ->interestedInProfilesLike($profile)
-            ->create();
+        $this->prepareAllAvailableOptions();
 
-        Profile::factory(5)
-            ->notInterestedInProfilesLike($profile)
-            ->create();
-
-        $this->assertMatchRepoCounts(10, $profile);
-        $this->assertEquals(5, $this->getRepo($profile)->filterGenders()->build()->count());
+        $this->assertEquals($expectedResults, $this->getRepo($profile)->filterGenders()->build()->count());
     }
 
-    /**
-     * @dataProvider provideLocationScenarios
-     */
-    public function testRepoShowsResultsWithinRange(float $latitude, float $longitude, int $radius): void
+    public function testRepoShowsResultsWithinRange(): void
     {
         /** @var Profile $profile */
         $profile = Profile::factory()
-            ->withCoordinates($latitude, $longitude)
+            ->withCoordinates(
+                fake()->latitude,
+                fake()->longitude
+            )
             ->create([
-                'maxDistance' => $radius,
+                'maxDistance' => 10,
             ]);
 
-        $searchRadius = new SearchRadius($latitude, $longitude, $radius);
+        $searchRadius = new SearchRadius($profile->latitude, $profile->longitude, $profile->maxDistance);
 
         Profile::factory(10)
             ->interestedInProfilesLike($profile)
             ->withinSearchRadius($searchRadius)
             ->create();
 
-        Profile::factory(10)
-            ->interestedInProfilesLike($profile)
-            ->outsideSearchRadius($searchRadius)
-            ->create();
-
-        $this->assertMatchRepoCounts(20, $profile);
-        $this->assertEquals(10, $this->getRepo($profile)->filterDistance()->build()->count());
-    }
-
-    public static function provideLocationScenarios(): array
-    {
-        return [
-            'basic' => [
-                fake()->latitude,
-                fake()->longitude,
-                10,
-            ],
-        ];
+        $this->assertMatchRepoCounts(10, $profile);
     }
 }

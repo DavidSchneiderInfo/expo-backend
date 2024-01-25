@@ -123,7 +123,9 @@ class Profile extends Model
             'bio' => $this->bio ?? '',
             'height' => $this->height,
             'sex' => $this->sex,
-            'updated_at' => $this->updated_at->toISOString(),
+            'updated_at' => $this->updated_at
+                ? $this->updated_at->toISOString()
+                : null,
             'media' => $this->media->toArray(),
             'i_f' => $this->i_f,
             'i_m' => $this->i_m,
@@ -144,7 +146,7 @@ class Profile extends Model
         {
             Log::error('Error calculating age', [
                 'userId' => $this->user_id,
-                'birthday' => $this->attributes['birthday'],
+                'birthday' => $this->birthday,
                 'exception' => $e,
             ]);
             return null;

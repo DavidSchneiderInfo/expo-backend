@@ -38,10 +38,10 @@ class ProfileFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => $name,
-            'birthday' => fake()->dateTimeBetween('-50 years', '-18 years')->format('Y-m-d'),
+            'birthday' => fake()->dateTimeBetween('-70 years', '-18 years')->format('Y-m-d'),
             'bio' => fake()->words(rand(10,20), true),
             'sex' => $gender,
-            'height' => rand(150,210),
+            'height' => null,
             'active' => true,
             'i_f' => true,
             'i_m' => true,
@@ -74,10 +74,11 @@ class ProfileFactory extends Factory
 
     public function outsideSearchRadius(SearchRadius $searchRadius): self
     {
-        return $this->state(function (array $attributes) use ($searchRadius) {
+        $somePointFarAway = new SearchRadius($searchRadius->latitudeMax, $searchRadius->longitudeMax, $searchRadius->radius+1);
+        return $this->state(function (array $attributes) use ($somePointFarAway) {
             return array_merge($attributes, [
-                'latitude' => fake()->latitude($searchRadius->latitudeMax),
-                'longitude' =>  fake()->latitude($searchRadius->longitudeMax),
+                'latitude' => fake()->latitude($somePointFarAway->latitudeMin, $somePointFarAway->latitudeMax),
+                'longitude' =>  fake()->latitude($somePointFarAway->longitudeMin, $somePointFarAway->longitudeMax),
             ]);
         });
     }

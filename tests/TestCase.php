@@ -2,24 +2,29 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Profile;
+use App\Repositories\MatchRepository;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Tests\Traits\CreatesApplication;
-use Tests\Traits\RefreshDatabaseFast;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
-    use RefreshDatabase;
 
-    protected function setUpTraits(): array
+    public function assertMatchRepoCounts(int $count, Profile $profile, string $message = ''): void
     {
-        $uses = parent::setUpTraits();
+        $repo = MatchRepository::forProfile($profile);
+        $query = $repo->build();
 
-        if (isset($uses[RefreshDatabaseFast::class])) {
-            $this->refreshTestDatabase();
-        }
+        $this->assertEquals(
+            $count,
+            $query->count(),
+            $message !== '' ? $message : 'Match repo has '. $query->count().' entries, expected where '.$count
+        );
+    }
 
-        return $uses;
+    protected function getRepo(Profile $profile): MatchRepository
+    {
+        return MatchRepository::forProfile($profile);
     }
 }

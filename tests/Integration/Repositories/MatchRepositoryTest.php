@@ -6,7 +6,6 @@ namespace Tests\Integration\Repositories;
 
 use App\Match\ValueObjects\SearchRadius;
 use App\Models\Profile;
-use App\Repositories\MatchRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Traits\ProvidesLikeableScenarios;
@@ -16,16 +15,10 @@ class MatchRepositoryTest extends TestCase
     use RefreshDatabase;
     use ProvidesLikeableScenarios;
 
-    private function getRepo(Profile $profile): MatchRepository
-    {
-        return MatchRepository::forProfile($profile);
-    }
-
     public function testRepoCanShowEmptyLists(): void
     {
         $profile = Profile::factory()->create();
-        $repo = $this->getRepo($profile);
-        $this->assertEquals(0, $repo->getProfiles()->count());
+        $this->assertMatchRepoCounts(0, $profile);
     }
 
     public function testRepoOnlyShowsActiveProfiles(): void
@@ -41,9 +34,7 @@ class MatchRepositoryTest extends TestCase
             ->interestedInProfilesLike($profile)
             ->create();
 
-        $this->assertEquals(1, $this->getRepo($profile)->build()->count());
-
-
+        $this->assertMatchRepoCounts(1,$profile);
     }
 
     /**
@@ -62,7 +53,7 @@ class MatchRepositoryTest extends TestCase
             ->notInterestedInProfilesLike($profile)
             ->create();
 
-        $this->assertEquals(10, $this->getRepo($profile)->build()->count());
+        $this->assertMatchRepoCounts(10, $profile);
         $this->assertEquals(5, $this->getRepo($profile)->filterGenders()->build()->count());
     }
 
@@ -90,6 +81,7 @@ class MatchRepositoryTest extends TestCase
             ->outsideSearchRadius($searchRadius)
             ->create();
 
+        $this->assertMatchRepoCounts(20, $profile);
         $this->assertEquals(10, $this->getRepo($profile)->filterDistance()->build()->count());
     }
 

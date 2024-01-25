@@ -72,17 +72,6 @@ class ProfileFactory extends Factory
         );
     }
 
-    public function outsideSearchRadius(SearchRadius $searchRadius): self
-    {
-        $somePointFarAway = new SearchRadius($searchRadius->latitudeMax, $searchRadius->longitudeMax, $searchRadius->radius+1);
-        return $this->state(function (array $attributes) use ($somePointFarAway) {
-            return array_merge($attributes, [
-                'latitude' => fake()->latitude($somePointFarAway->latitudeMin, $somePointFarAway->latitudeMax),
-                'longitude' =>  fake()->latitude($somePointFarAway->longitudeMin, $somePointFarAway->longitudeMax),
-            ]);
-        });
-    }
-
     public function withCoordinates(float $latitude, float $longitude): self
     {
         return $this->state(function (array $attributes) use ($latitude, $longitude) {
@@ -120,18 +109,6 @@ class ProfileFactory extends Factory
                     break;
             }
 
-            return $attributes;
-        });
-    }
-
-    public function notInterestedInProfilesLike(Profile $profile): self
-    {
-        return $this->state(function (array $attributes) use ($profile) {
-            $attributes['i_f'] = true;
-            $attributes['i_m'] = true;
-            $attributes['i_x'] = true;
-            $key = 'i_'.$profile->sex;
-            $attributes[$key] = false;
             return $attributes;
         });
     }

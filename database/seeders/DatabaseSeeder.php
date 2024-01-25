@@ -6,6 +6,7 @@ use App\Enums\Sex;
 use App\Match\ValueObjects\SearchRadius;
 use App\Models\Profile;
 use App\Models\User;
+use App\Repositories\MatchRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -16,8 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->createUsers();
-
         /** @var User $me */
         $me = User::query()
             ->firstOrCreate([
@@ -41,7 +40,33 @@ class DatabaseSeeder extends Seeder
             'maxDistance' => 100,
         ]));
 
-        $this->createUsers($me);
+        $existing = Profile::query()->whereNot('id', $me->profile->id)->count();
+        if($existing<1000)
+        {
+            Profile::factory()
+                ->count(1000-$existing)
+                ->create();
+        }
+
+        $existingInterested = MatchRepository::forProfile($me->profile)->getProfiles()->count();
+        if($existingInterested<100)
+        {
+            Profile::factory()
+                ->interestedInProfilesLike($me->profile)
+                ->withinSearchRadius(SearchRadius::forProfile($me->profile))
+                ->count(100-$existingInterested)
+                ->create();
+        }
+
+        $existingMatches = $me->profile->matches()->count();
+        if($existingMatches<25)
+        {
+            $profiles = MatchRepository::forProfile($me->profile)
+                ->getProfiles()
+                ->limit(25)
+                ->get();
+            $me->profile->likesFromUsers()->sync($profiles);
+        }
     }
 
     public function createUsers(?User $me = null): void

@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class LoginControllerTest extends TestCase
 {
-    use TestsAuthentication;
+    use TestsResourceFormat;
 
     public function testUserCanSignIn(): void
     {
@@ -28,7 +28,7 @@ class LoginControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful()
-            ->assertJsonStructure($this->expectedStructure());
+            ->assertJsonStructure($this->expectedAuthFormat());
     }
 
     public function testUsersCanNotLoginWithWrongPassword(): void

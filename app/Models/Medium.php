@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string|null $path
+ */
 class Medium extends Model
 {
     /**
@@ -19,5 +22,12 @@ class Medium extends Model
     public function profile(): BelongsTo
     {
         return $this->belongsTo(Profile::class);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'path' => $this->path,
+        ];
     }
 }

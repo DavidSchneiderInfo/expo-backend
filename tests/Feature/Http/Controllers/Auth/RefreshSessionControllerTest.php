@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class RefreshSessionControllerTest extends TestCase
 {
-    use TestsAuthentication;
+    use TestsResourceFormat;
 
     public function testRefreshingASession(): void
     {
@@ -21,7 +21,7 @@ class RefreshSessionControllerTest extends TestCase
         $response = $this->post('auth/refresh');
 
         $response->assertSuccessful()
-            ->assertJsonStructure($this->expectedStructure());
+            ->assertJsonStructure($this->expectedAuthFormat());
 
         $this->assertIsBool($response->json('active'));
         $this->assertIsBool($response->json('user.i_f'));

@@ -6,10 +6,10 @@ namespace Tests\Feature\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-trait TestsAuthentication {
+trait TestsResourceFormat {
     use RefreshDatabase;
 
-    private function expectedStructure(): array
+    private function expectedAuthFormat(): array
     {
         return [
             'user' => [
@@ -17,12 +17,25 @@ trait TestsAuthentication {
                 'age',
                 'sex',
                 'bio',
-                'media',
+                'media' => [],
                 'height',
                 'distance',
             ],
             'token',
             'expires_at'
+        ];
+    }
+
+    private function expectedProfileFormat(): array
+    {
+        return [
+            'name',
+            'age',
+            'sex',
+            'bio',
+            'media' => [],
+            'height',
+            'distance',
         ];
     }
 }

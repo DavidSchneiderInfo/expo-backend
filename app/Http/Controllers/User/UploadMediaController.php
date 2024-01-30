@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProfileResource;
 use App\Models\User;
 use App\Profile\Actions\UploadMedia;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UploadMediaController extends Controller
@@ -17,7 +17,7 @@ class UploadMediaController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): ProfileResource
     {
         $request->validate([
             'media' => 'required|array',
@@ -29,9 +29,9 @@ class UploadMediaController extends Controller
 
         foreach ($request->file('media') as $media)
         {
-            $this->uploadMedia->upload($user, $media);
+            $this->uploadMedia->upload($user->profile, $media);
         }
 
-        return response()->json();
+        return new ProfileResource($user->profile);
     }
 }

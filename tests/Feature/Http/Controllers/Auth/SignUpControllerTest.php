@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class SignUpControllerTest extends TestCase
 {
-    use TestsAuthentication;
+    use TestsResourceFormat;
 
     public function testUserCanSignUp(): void
     {
@@ -27,7 +27,7 @@ class SignUpControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful()
-            ->assertJsonStructure($this->expectedStructure());
+            ->assertJsonStructure($this->expectedAuthFormat());
     }
 
     public function testUserCantSignUpWithExistingEmail(): void

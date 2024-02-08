@@ -51,7 +51,7 @@ class SignUpController extends Controller
         {
             return response()->json([
                 'message' => 'These credentials have already been taken.',
-            ], 409);
+            ], 403);
         } catch (ProfileException $e) {
             $this->logger->error($e->getMessage(), [
                 'user_id'

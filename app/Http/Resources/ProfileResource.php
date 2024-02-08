@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\DistanceUnit;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Carbon;
 
 /**
  * @property Profile $resource
@@ -17,6 +16,12 @@ class ProfileResource extends JsonResource
     {
         parent::__construct($resource);
         parent::withoutWrapping();
+    }
+
+    public static function collection($resource): AnonymousResourceCollection
+    {
+        parent::withoutWrapping();
+        return parent::collection($resource);
     }
 
     /**
@@ -44,6 +49,8 @@ class ProfileResource extends JsonResource
             'i_m' => $this->resource->i_m,
             'i_x' => $this->resource->i_x,
             'media' => $this->resource->media->toArray(),
+            'avatar' => $this->resource->avatar,
+            'cover' => $this->resource->cover,
             'distance' => $profile->id !== $this->resource->id
                 ? $this->distance($profile)
                 : 0,

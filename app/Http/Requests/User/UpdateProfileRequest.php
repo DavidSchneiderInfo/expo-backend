@@ -25,7 +25,7 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|between:1,20',
-            'bio' => 'sometimes|string|between:1,500',
+            'bio' => 'sometimes|nullable|string|max:500',
             'sex' => 'sometimes|in:f,m,x',
             'height' => 'sometimes|integer|between:60,240',
             'i_f' => self::$interestedInSexRule,

@@ -58,6 +58,8 @@ class UserCanHaveAProfileTest extends TestCase
                     'maxDistance' => null,
                     'latitude' => null,
                     'longitude' => null,
+                    'avatar' => null,
+                    'cover' => null,
                 ],
             ],
             'sex to f' => [
@@ -79,6 +81,8 @@ class UserCanHaveAProfileTest extends TestCase
                     'maxDistance' => null,
                     'latitude' => null,
                     'longitude' => null,
+                    'avatar' => null,
+                    'cover' => null,
                 ],
             ],
             'sex to m' => [
@@ -100,6 +104,8 @@ class UserCanHaveAProfileTest extends TestCase
                     'maxDistance' => null,
                     'latitude' => null,
                     'longitude' => null,
+                    'avatar' => null,
+                    'cover' => null,
                 ],
             ],
             'sex to x' => [
@@ -121,6 +127,8 @@ class UserCanHaveAProfileTest extends TestCase
                     'maxDistance' => null,
                     'latitude' => null,
                     'longitude' => null,
+                    'avatar' => null,
+                    'cover' => null,
                 ],
             ],
             'height to 180' => [
@@ -142,6 +150,8 @@ class UserCanHaveAProfileTest extends TestCase
                     'maxDistance' => null,
                     'latitude' => null,
                     'longitude' => null,
+                    'avatar' => null,
+                    'cover' => null,
                 ],
             ],
             'height to 170, sex to m' => [
@@ -164,6 +174,8 @@ class UserCanHaveAProfileTest extends TestCase
                     'maxDistance' => null,
                     'latitude' => null,
                     'longitude' => null,
+                    'avatar' => null,
+                    'cover' => null,
                 ],
             ],
         ];

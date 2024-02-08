@@ -43,6 +43,6 @@ class SignUpControllerTest extends TestCase
             'username' => 'Example Name',
             'birthday' => '1990-09-21',
         ])
-            ->assertStatus(409);
+            ->assertStatus(403);
     }
 }

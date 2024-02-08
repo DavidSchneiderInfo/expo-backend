@@ -34,6 +34,11 @@ return new class extends Migration
             $table->boolean('active')->default(false);
             $table->unsignedTinyInteger('maxDistance')->nullable()->default(null);
             $table->timestamps();
+
+            $table->index(['latitude', 'longitude']);
+            $table->index(['i_f', 'i_m', 'i_x']);
+            $table->index('sex');
+            $table->index('active');
         });
     }
 

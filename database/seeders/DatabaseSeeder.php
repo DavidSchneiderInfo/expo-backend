@@ -35,9 +35,9 @@ class DatabaseSeeder extends Seeder
             'i_f' => true,
             'i_m' => false,
             'i_x' => false,
-            'latitude' => 47.1698,
-            'longitude' => 8.9754,
-            'maxDistance' => 100,
+            'latitude' => 37.785834,
+            'longitude' => -122.406417,
+            'maxDistance' => null,
         ]));
 
         $existing = Profile::query()->whereNot('id', $me->profile->id)->count();

@@ -35,6 +35,8 @@ use Illuminate\Support\Str;
  * @property null|int maxDistance
  * @property Carbon $updated_at
  * @property Collection $media
+ * @property null|string $avatar
+ * @property null|string $cover
  * @method static ProfileFactory factory(array|callable|int|null $count=1, array|callable $state=[])
  */
 class Profile extends Model
@@ -72,6 +74,8 @@ class Profile extends Model
         'i_m',
         'i_x',
         'active',
+        'avatar',
+        'cover',
     ];
 
     protected $casts = [
@@ -133,6 +137,8 @@ class Profile extends Model
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
             'maxDistance' => $this->maxDistance,
+            'avatar' => $this->avatar,
+            'cover' => $this->cover,
         ];
     }
 

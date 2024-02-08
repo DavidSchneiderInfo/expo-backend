@@ -49,6 +49,8 @@ class ProfileFactory extends Factory
             'latitude' => fake()->latitude,
             'longitude' => fake()->longitude,
             'maxDistance' => null,
+            'avatar' => null,
+            'cover' => null,
         ];
     }
 

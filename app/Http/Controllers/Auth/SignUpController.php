@@ -25,7 +25,6 @@ class SignUpController extends Controller
     public function __invoke(Request $request): JsonResponse|SuccessfulAuthenticationResource
     {
         $request->validate([
-            'username' => 'required|string|between:6,32',
             'email' => 'required|email',
             'password' => 'required',
             'birthday' => 'required|date',
@@ -39,7 +38,6 @@ class SignUpController extends Controller
             $user->save();
 
             $this->createProfile->create($user, [
-                'name' => $request->get('username'),
                 'birthday' => $request->get('birthday'),
             ]);
 

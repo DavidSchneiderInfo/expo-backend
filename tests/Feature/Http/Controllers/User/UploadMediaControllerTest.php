@@ -8,11 +8,9 @@ use Illuminate\Http\UploadedFile;
 use Laravel\Sanctum\Sanctum;
 use Tests\Feature\Http\Controllers\Auth\TestsResourceFormat;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UploadMediaControllerTest extends TestCase
 {
-    use RefreshDatabase;
     use TestsResourceFormat;
 
     public function testUserCanUploadMedia(): void

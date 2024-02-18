@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\RefreshDatabaseFast;
 
 trait TestsResourceFormat {
-    use RefreshDatabase;
+    use RefreshDatabaseFast;
 
     private function expectedAuthFormat(): array
     {

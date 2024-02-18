@@ -7,11 +7,11 @@ namespace Tests\Feature\Http\Controllers\Match;
 use App\Models\Profile;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\RefreshDatabaseFast;
 
 class MatchControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabaseFast;
 
     public function testUsersCanMatch(): void
     {

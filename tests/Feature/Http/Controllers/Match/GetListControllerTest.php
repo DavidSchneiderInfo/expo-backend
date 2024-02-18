@@ -3,17 +3,15 @@
 namespace Tests\Feature\Http\Controllers\Match;
 
 use App\Enums\Sex;
-use App\Match\ValueObjects\SearchRadius;
 use App\Models\Profile;
-use App\Repositories\MatchRepository;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\ProvidesLikeableScenarios;
+use Tests\Traits\RefreshDatabaseFast;
 
 class GetListControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabaseFast;
     use ProvidesLikeableScenarios;
 
     /**

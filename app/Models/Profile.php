@@ -21,7 +21,7 @@ use Illuminate\Support\Str;
  * @property Collection $likesToUsers
  * @property Collection $likesFromUsers
  * @property null|int $user_id
- * @property string $name
+ * @property string|null $name
  * @property string $bio
  * @property Carbon $birthday
  * @property null|int $height

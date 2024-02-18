@@ -2,17 +2,14 @@
 
 namespace Tests\Feature\Http\Controllers\User;
 
-use App\Models\Medium;
 use App\Models\Profile;
 use Illuminate\Http\UploadedFile;
 use Laravel\Sanctum\Sanctum;
 use Tests\Feature\Http\Controllers\Auth\TestsResourceFormat;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UploadCoverControllerTest extends TestCase
 {
-    use RefreshDatabase;
     use TestsResourceFormat;
 
     /**

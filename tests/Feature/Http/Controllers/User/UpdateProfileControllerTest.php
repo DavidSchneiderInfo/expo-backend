@@ -7,11 +7,11 @@ use App\Models\User;
 use App\Profile\Actions\CreateProfile;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\RefreshDatabaseFast;
 
 class UpdateProfileControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabaseFast;
 
     /**
      * @dataProvider providePersonalDetailsPatches

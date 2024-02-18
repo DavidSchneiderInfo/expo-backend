@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Auth\ValueObjects\Token;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,7 +17,7 @@ class SuccessfulAuthenticationResource extends JsonResource
 {
     public function __construct(
         private readonly User $user,
-        private readonly NewAccessToken $token
+        private readonly Token $token
     )
     {
         parent::__construct(null);
@@ -34,7 +35,7 @@ class SuccessfulAuthenticationResource extends JsonResource
             'user' => new ProfileResource($this->user->profile),
             'active' => $this->user->profile->active,
             'token' => $this->token->plainTextToken,
-            'expires_at' => $this->token->accessToken->expires_at,
+            'expires_at' => $this->token->expiresAt,
         ];
     }
 

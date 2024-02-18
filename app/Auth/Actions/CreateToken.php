@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Auth\Actions;
 
+use App\Auth\Traits\PreparesTokens;
+use App\Auth\ValueObjects\Token;
 use App\Models\User;
-use Laravel\Sanctum\NewAccessToken;
 
 class CreateToken {
-    public function getTokenForUser(User $user): NewAccessToken
+    use PreparesTokens;
+
+    public function getTokenForUser(User $user): Token
     {
-        return $user->createToken('mobile', ['*'], now()->addWeek());
+        return $this->prepareToken($user);
     }
 }

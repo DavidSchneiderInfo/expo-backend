@@ -6,13 +6,13 @@ namespace Tests\Integration\Repositories;
 
 use App\Match\ValueObjects\SearchRadius;
 use App\Models\Profile;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Traits\ProvidesLikeableScenarios;
+use Tests\Traits\RefreshDatabaseFast;
 
 class MatchRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabaseFast;
     use ProvidesLikeableScenarios;
 
     public function testRepoCanShowEmptyLists(): void
